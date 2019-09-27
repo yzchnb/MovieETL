@@ -33,6 +33,24 @@ public class ProductIdsExtractor {
         }
     }
 
+    public static int getProductIdsCount(){
+        try{
+            String sql = "select count(distinct productId) from Product";
+
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+            //System.out.println(rs.getFetchSize());
+            while(rs.next()){
+                return rs.getInt(1);
+            }
+            return 0;
+        }catch (SQLException e){
+            e.printStackTrace();
+            return 0;
+        }
+
+    }
+
     public static void main(String[] args) {
         ArrayList<String> ps = getProductIdsForRange(0, 100);
         System.out.println(ps);

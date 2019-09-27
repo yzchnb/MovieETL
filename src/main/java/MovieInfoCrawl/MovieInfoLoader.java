@@ -13,12 +13,12 @@ import java.util.Collections;
 
 public class MovieInfoLoader {
 
-    private static BufferedWriter productDetailFileHandle;
-    private static BufferedWriter productFormatFileHandle;
-    private static BufferedWriter productActorFileHandle;
+    private BufferedWriter productDetailFileHandle;
+    private BufferedWriter productFormatFileHandle;
+    private BufferedWriter productActorFileHandle;
 
 
-    public static void switchFileHandles(String baseDir){
+    public void switchFileHandles(String baseDir){
         try{
             productActorFileHandle = new BufferedWriter(new FileWriter(baseDir + "productActorFile.csv"));
             productDetailFileHandle = new BufferedWriter(new FileWriter(baseDir + "productDetailFile.csv"));
@@ -28,7 +28,7 @@ public class MovieInfoLoader {
         }
     }
 
-    public static void loadBundles(ArrayList<ProductBundle> productBundles){
+    public void loadBundles(ArrayList<ProductBundle> productBundles){
         StringBuilder builderDetail = new StringBuilder();
         StringBuilder builderActors = new StringBuilder();
         StringBuilder builderFormats = new StringBuilder();
@@ -60,7 +60,7 @@ public class MovieInfoLoader {
 
     }
 
-    public static void loadHeaders(){
+    public void loadHeaders(){
         String detailHeader = buildCSVHeaderLine(ProductDetail.class);
         String formatHeader = buildCSVHeaderLine(ProductFormat.class);
         String actorHeader = buildCSVHeaderLine(ProductActor.class);

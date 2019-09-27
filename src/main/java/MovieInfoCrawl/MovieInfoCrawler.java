@@ -43,17 +43,30 @@ public class MovieInfoCrawler {
             "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 Safari/537.36 TheWorld 7",
             "Mozilla/5.0 (Windows NT 6.1; W…) Gecko/20100101 Firefox/60.0"};
 
-    private static Vector<Pair<String, Integer>> proxies = new Vector<>();
-    private static Vector<Integer> validProxyIndice = new Vector<>();
+    private final Vector<Pair<String, Integer>> proxies = new Vector<>();
 
+    private static long lastRefreshTime = System.currentTimeMillis();
 
-    private static long lastRefreshTime = 0;
+    private boolean refreshingProxies = false;
 
-    private static void refreshProxies(){
-        synchronized (MovieInfoCrawler.class){
-            if(validProxyIndice.size() == 5){
-                return;
+    public MovieInfoCrawler(){
+        refreshProxies();
+    }
+
+    private void refreshProxies(){
+        if(refreshingProxies){
+            while (refreshingProxies){
+                try{
+                    Thread.sleep(5000);
+                }catch (InterruptedException e){
+                    e.printStackTrace();
+                    return;
+                }
             }
+            return;
+        }
+        synchronized (proxies){
+            refreshingProxies = true;
             while(System.currentTimeMillis() - lastRefreshTime < 15000){
                 try{
                     Thread.sleep(1000);
@@ -62,12 +75,8 @@ public class MovieInfoCrawler {
                     e.printStackTrace();
                 }
             }
-            proxies = new Vector<>();
+            proxies.clear();
             lastRefreshTime = System.currentTimeMillis();
-            validProxyIndice = new Vector<>();
-            for (int i = 0; i < 4; i++) {
-                validProxyIndice.add(i);
-            }
             System.out.println("refreshing proxies...");
             try{
                 Document doc = Jsoup.connect("http://piping.mogumiao.com/proxy/api/get_ip_bs?appKey=b76cf64b43c74d8c9f247cc9b4194c2d&count=5&expiryDate=0&format=1&newLine=2")
@@ -82,14 +91,10 @@ public class MovieInfoCrawler {
                 }
             }catch (IOException e){
                 e.printStackTrace();
+            }finally {
+                refreshingProxies = false;
             }
         }
-    }
-
-
-    static{
-        lastRefreshTime = System.currentTimeMillis();
-        MovieInfoCrawler.refreshProxies();
     }
 
     private Map<String, String> cookies = new HashMap<>();
@@ -109,10 +114,15 @@ public class MovieInfoCrawler {
 //            }
 //        }
 //        return Jsoup.parse(page.asXml());
-        int proxyIndex = validProxyIndice.get(random.nextInt(validProxyIndice.size()));
-        Pair<String, Integer> proxy = proxies.get(proxyIndex);
+        Pair<String, Integer> proxy;
+        synchronized (proxies){
+            if(proxies.size() == 0){
+                refreshProxies();
+            }
+            proxy = proxies.get(random.nextInt(proxies.size()));
+        }
         try{
-            Connection.Response response = Jsoup.connect(baseUrl + productId).timeout(20000)
+            Connection.Response response = Jsoup.connect(baseUrl + productId).timeout(30000)
                     .method(Connection.Method.GET)
                     .cookies(cookies)
                     .header("user-agent", userAgents[random.nextInt(userAgents.length)])
@@ -125,9 +135,11 @@ public class MovieInfoCrawler {
         }catch (IOException e){
             e.printStackTrace();
             System.out.println("abandoning proxy ip " + proxy.first);
-            validProxyIndice.remove((Integer)proxyIndex);
-            if(validProxyIndice.size() == 0){
-                refreshProxies();
+            synchronized (proxies){
+                proxies.remove(proxy);
+                if(proxies.size() == 0){
+                    refreshProxies();
+                }
             }
             return null;
         }

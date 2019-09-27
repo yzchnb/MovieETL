@@ -69,7 +69,7 @@ public class MovieInfoTransformer {
 
     private static String processDirector(Element element){
         Elements elements = element.children();
-        return elements.size() > 1 ? elements.get(1).html() : "";
+        return elements.size() > 1 ? elements.get(1).html().replaceAll(",", " ") : "";
     }
 
     private static String[] processFormat(Element element){
@@ -78,7 +78,7 @@ public class MovieInfoTransformer {
     }
 
     private static String processReleaseDate(Element element){
-        return element.text().split("Date: ")[1];
+        return element.text().split("Date: ")[1].replaceAll(",", " ");
     }
 
     private static String processRunTime(Element element){
