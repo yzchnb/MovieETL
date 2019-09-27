@@ -5,30 +5,25 @@ import Entities.User;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class LoadTask implements Runnable{
-    private User user;
-    private Review review;
-    private Product product;
+    private ArrayList<User> users;
+    private ArrayList<Review> reviews;
+    private ArrayList<Product> products;
     private Connection conn;
 
-    public LoadTask(Connection conn, User user, Product product, Review review){
+    public LoadTask(Connection conn, ArrayList<User> userBuffer, ArrayList<Product> productBuffer, ArrayList<Review> reviewBuffer){
         this.conn = conn;
-        this.review = review;
-        this.user = user;
-        this.product = product;
+        this.reviews = reviewBuffer;
+        this.users = userBuffer;
+        this.products = productBuffer;
     }
 
     public void run(){
         Loader loader = new Loader();
         loader.init(conn);
-        loader.insertOneReview(user, review, product);
-        try{
-            conn.close();
-        }catch (SQLException e){
-            e.printStackTrace();
-            System.out.println("conn close fail");
-        }
+        loader.insertReviews(users, reviews, products);
     }
 
 }

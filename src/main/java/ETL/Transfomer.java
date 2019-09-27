@@ -45,12 +45,18 @@ public class Transfomer {
 
     public static boolean checkRawReviewValidity(HashMap<String, String> rawReviewData){
         return rawReviewData.containsKey(userIdKey)
-        && rawReviewData.containsKey(helpfulnessKey)
-        && rawReviewData.containsKey(productIdKey)
-        && rawReviewData.containsKey(scoreKey)
-        && rawReviewData.containsKey(timeKey)
-        && rawReviewData.containsKey(profileNameKey)
-        && rawReviewData.containsKey(summaryKey)
-        && rawReviewData.containsKey(textKey);
+                && rawReviewData.containsKey(helpfulnessKey)
+                && rawReviewData.containsKey(productIdKey)
+                && rawReviewData.containsKey(scoreKey)
+                && rawReviewData.containsKey(timeKey)
+                && rawReviewData.containsKey(profileNameKey)
+                && rawReviewData.containsKey(summaryKey)
+                && rawReviewData.containsKey(textKey)
+                && rawReviewData.get(userIdKey).length() <= 14
+                && rawReviewData.get(helpfulnessKey).length() <= 10
+                && rawReviewData.get(productIdKey).length() <= 10
+                && rawReviewData.get(profileNameKey).length() <= 50
+                && rawReviewData.get(summaryKey).length() <= 255
+                && rawReviewData.get(textKey).length() <= 35000;
     }
 }

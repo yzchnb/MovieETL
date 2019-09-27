@@ -1,3 +1,5 @@
+package Utils;
+
 import java.sql.Connection;
 import java.util.Properties;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
@@ -45,6 +47,7 @@ public class C3P0Mysql {
         Connection conn = null;
         try {
             conn = cpds.getConnection();
+            conn.setAutoCommit(false);
         } catch (Exception e) {
             e.printStackTrace();
         }

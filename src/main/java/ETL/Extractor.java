@@ -8,13 +8,8 @@ public class Extractor {
 
     public static boolean init(){
         try{
-            URL url = ClassLoader.getSystemResource("movies.txt");
-
-            if(url == null){
-                System.out.println("url null");
-                return false;
-            }
-            reviewData = new BufferedReader(new FileReader(url.getFile()));
+            File file = new File("/Users/purchaser/Desktop/movies.txt");
+            reviewData = new BufferedReader(new FileReader(file));
             return true;
         }catch (FileNotFoundException e){
             e.printStackTrace();

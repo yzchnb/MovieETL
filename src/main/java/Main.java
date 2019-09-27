@@ -1,11 +1,10 @@
 import ETL.Extractor;
-import ETL.Loader;
 import ETL.Transfomer;
 import Entities.Product;
 import Entities.Review;
 import Entities.User;
+import Utils.C3P0Mysql;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,19 +15,26 @@ public class Main {
 
     public static void main(String[] args) throws SQLException {
 
-        int poolNum = 50;
+        long startTime = System.currentTimeMillis();
+
+        int bufferCapacity = 1000;
+        int poolNum = 30;
         System.out.println("Preparing connections");
         C3P0Mysql conns = C3P0Mysql.getInstance();
         System.out.println("Connections established");
         prepareFile();
 
 
-        ExecutorService pool = Executors.newFixedThreadPool(50);
-
+        ExecutorService pool = Executors.newFixedThreadPool(poolNum);
 
         int count = 0;
         out: while(true){
-            for (int i = 0; i < 1000; i++) {
+
+            ArrayList<User> userBuffer = new ArrayList<User>(bufferCapacity);
+            ArrayList<Product> productBuffer = new ArrayList<Product>(bufferCapacity);
+            ArrayList<Review> reviewBuffer = new ArrayList<Review>(bufferCapacity);
+
+            for (int i = 0; i < bufferCapacity; i++) {
                 HashMap<String, String> rawReview = Extractor.getNextRawReview();
                 if(rawReview == null){
                     break out;
@@ -36,17 +42,32 @@ public class Main {
                 if(!Transfomer.checkRawReviewValidity(rawReview)){
                     continue;
                 }
-                User user = Transfomer.getUser(rawReview);
-                Review review = Transfomer.getReview(rawReview);
-                Product product = Transfomer.getProduct(rawReview);
-                LoadTask loadTask = new LoadTask(conns.getConnection(), user, product, review);
-                pool.submit(loadTask);
+                userBuffer.add(Transfomer.getUser(rawReview));
+                reviewBuffer.add(Transfomer.getReview(rawReview));
+                productBuffer.add(Transfomer.getProduct(rawReview));
                 count += 1;
-                //System.out.println(count);
             }
+            //System.out.println(userBuffer.size());
+            LoadTask loadTask = new LoadTask(conns.getConnection(), userBuffer, productBuffer, reviewBuffer);
+            pool.submit(loadTask);
+            //Loader loader = new Loader();
+            //loader.init(conns.getConnection());
+            //loader.insertReviews(userBuffer, reviewBuffer, productBuffer);
             System.out.println(count);
         }
 
+        pool.shutdown();
+        try{
+            while(!pool.isTerminated()){
+                Thread.sleep(1000);
+            }
+        }catch (InterruptedException e){
+            e.printStackTrace();
+        }
+
+        long endTime = System.currentTimeMillis();
+
+        System.out.println("Running time: " + (endTime - startTime) / 1000 + "s");
     }
 
     static void prepareFile(){
