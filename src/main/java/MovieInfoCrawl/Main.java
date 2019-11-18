@@ -1,17 +1,13 @@
 package MovieInfoCrawl;
 
-import ETL.Loader;
 import Entities.ProductBundle;
-import org.eclipse.jetty.util.IO;
 import org.jsoup.nodes.Document;
 
 import java.io.*;
-import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Properties;
-import java.util.Vector;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -19,17 +15,25 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class Main {
 
     private static String baseDir;
+    private static Integer retryTime;
+    private static BufferedWriter failedProductIdsCsvFileWriter;
     static {
         try{
             Properties props = new Properties();
             props.load(Main.class.getClassLoader().getResourceAsStream("baseDir.properties"));
             baseDir = props.getProperty("baseDir");
+            retryTime = Integer.parseInt(props.getProperty("retryTime"));
+            File failedProductIdsCsvFile = new File(props.getProperty("failedProductIdsCsv"));
+            if(!failedProductIdsCsvFile.exists()){
+                failedProductIdsCsvFile.createNewFile();
+            }
+            failedProductIdsCsvFileWriter = new BufferedWriter(new FileWriter(failedProductIdsCsvFile));
         }catch (IOException e){
             e.printStackTrace();
         }
     }
 
-    private final static int BATCH_SIZE = 2000;
+    private final static int BATCH_SIZE = 4000;
 
     private final static int bundleBufferCapcity = 20;
 
@@ -40,6 +44,32 @@ public class Main {
     private final static int THREAD_POOL_SIZE = 10;
 
     public static void main(String[] args) {
+        doCrawlAndSave();
+    }
+
+    static void doCrawlAndSave() {
+        File htmlsDir = new File(baseDir + "/htmls");
+        int startIndex = htmlsDir.listFiles().length;
+        ProductIdsExtractor productIdsExtractor = new FileProductIdsExtractor();
+
+        MovieInfoCrawler crawler = new MovieInfoCrawler();
+
+        ExecutorService executorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
+        for(int currIndex = startIndex; currIndex < productIdsExtractor.getProductIdsCount(); currIndex++){
+            executorService.submit(new StreamProcessRunner(crawler, productIdsExtractor.getProductId(currIndex), currIndex , retryTime));
+        }
+        executorService.shutdown();
+        while(!executorService.isTerminated()){
+            try{
+                Thread.sleep(60000);
+            }catch (InterruptedException e){
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    static void doCrawlAndParse(){
         Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         System.out.println(sdf.format(date));
@@ -63,9 +93,9 @@ public class Main {
             System.out.println("log file not found");
         }
         System.out.println(sdf.format(date));
+        ProductIdsExtractor productIdsExtractor = new FileProductIdsExtractor();
 
-
-        int productIdsCount = ProductIdsExtractor.getProductIdsCount();
+        int productIdsCount = productIdsExtractor.getProductIdsCount();
         int loopTime = productIdsCount / BATCH_SIZE + 1;
 
         ExecutorService executorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
@@ -80,7 +110,61 @@ public class Main {
                 e.printStackTrace();
             }
         }
+    }
 
+    static class StreamProcessRunner implements Runnable{
+        private String productId;
+        private MovieInfoCrawler crawler;
+        private int retryTime;
+        private int currIndex;
+        StreamProcessRunner(MovieInfoCrawler crawler,
+                            String productId,
+                            int currIndex,
+                            int retryTime){
+            this.productId = productId;
+            this.crawler = crawler;
+            this.retryTime = retryTime;
+            this.currIndex = currIndex;
+        }
+        @Override
+        public void run() {
+            try{
+
+                if(productId == null){
+                    return;
+                }
+                Document doc;
+                boolean success = false;
+                while(retryTime > 0){
+                    doc = crawler.crawlOneProduct(productId);
+                    if(doc == null){
+                        System.out.println("Crawler" + Thread.currentThread().getId() + " crawling " + productId + " failed... cause: cannot access  retryTime left:" + retryTime);
+                        //retry
+                        retryTime--;
+                        Thread.sleep(5000);
+                        continue;
+                    }
+                    success = MovieInfoTransformer.parseAndSaveDoc(productId, doc);
+                    if(!success){
+                        System.out.println("Crawler" + Thread.currentThread().getId() + " crawling " + productId + " failed... cause: rejected retryTime left:" + retryTime);
+                        retryTime--;
+                        Thread.sleep(5000);
+                        continue;
+                    }
+                    break;
+                }
+                if(!success){
+                    System.out.println("Crawler" + Thread.currentThread().getId() + " crawling " + productId + " failed");
+                    //TODO 写入文件，记录失败
+                    failedProductIdsCsvFileWriter.write(productId + "\n");
+                    return;
+                }
+                System.out.println("Crawler" + Thread.currentThread().getId() + " got product " + productId);
+
+            }catch (InterruptedException | IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     static class BatchProcessThread extends Thread{
@@ -89,6 +173,7 @@ public class Main {
         private boolean crawlersOverFlag = false;
         private int batchIndex;
         private int batchSize = BATCH_SIZE;
+        private ProductIdsExtractor productIdsExtractor = new FileProductIdsExtractor();
         BatchProcessThread(int batchIndex){
             this.batchIndex = batchIndex;
         }
@@ -127,7 +212,7 @@ public class Main {
 
             //step4: start loading productIds
             boolean noMoreProducts = false;
-            ArrayList<String> productIds = ProductIdsExtractor.getProductIdsForRange(batchIndex * BATCH_SIZE, BATCH_SIZE);
+            ArrayList<String> productIds = productIdsExtractor.getProductIdsForRange(batchIndex * BATCH_SIZE, BATCH_SIZE);
 
             System.out.println("Batch - " + batchRange + ": " +  Thread.currentThread().getId() + " got productIds: " + productIds.size());
 
@@ -204,7 +289,7 @@ public class Main {
                                 Thread.sleep(5000);
                                 continue;
                             }
-                            bundle = MovieInfoTransformer.ParseDoc(productId, doc);
+                            bundle = MovieInfoTransformer.parseDoc(productId, doc);
                             if(bundle == null){
                                 System.out.println("Crawler" + Thread.currentThread().getId() + " crawling " + productId + " failed... cause: rejected retryTime left:" + retryTime);
                                 retryTime--;

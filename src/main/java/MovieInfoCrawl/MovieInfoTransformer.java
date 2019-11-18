@@ -8,10 +8,27 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Properties;
 
 public class MovieInfoTransformer {
-    public static ProductBundle ParseDoc(String productId, Document doc){
+
+    private static String baseDir;
+    static {
+        try{
+            Properties props = new Properties();
+            props.load(Main.class.getClassLoader().getResourceAsStream("baseDir.properties"));
+            baseDir = props.getProperty("baseDir");
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public static ProductBundle parseDoc(String productId, Document doc){
         Elements lis = doc.select("#detail-bullets > table > tbody > tr > td > div > ul > li");
         if(lis.size() == 0){
             return null;
@@ -54,7 +71,32 @@ public class MovieInfoTransformer {
         return new ProductBundle(productDetail, productActors, productFormats);
     }
 
-
+    public static boolean parseAndSaveDoc(String productId, Document doc){
+        Elements lisOld = doc.select("#detail-bullets > table > tbody > tr > td > div > ul > li");
+        Elements lisNew = doc.select("#a-page > div.av-page-desktop.avu-retail-page > div.avu-content.avu-section > div > div > div.DVWebNode-detail-atf-wrapper.DVWebNode > div.av-detail-section > div > div._2vWb4y.dv-dp-node-meta-info > div > div");
+        if(lisOld.size() == 0 && lisNew.size() == 0){
+            return false;
+        }
+        String htmlBaseDirPath = baseDir + "/htmls";
+        File htmlBaseDir = new File(htmlBaseDirPath);
+        if(!htmlBaseDir.exists()){
+            htmlBaseDir.mkdir();
+        }
+        try{
+            File htmlFile = new File(htmlBaseDirPath + "/" + productId + ".html");
+            if(!htmlFile.exists()) {
+                if(!htmlFile.createNewFile()){
+                    throw new Exception(htmlBaseDirPath + "/" + productId + ".html" + " 创建失败.");
+                }
+            }
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(htmlFile));
+            bufferedWriter.write(doc.html());
+            bufferedWriter.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return true;
+    }
 
 
 
@@ -88,11 +130,11 @@ public class MovieInfoTransformer {
 
     public static void main(String[] args) {
         MovieInfoCrawler crawler = new MovieInfoCrawler();
-        Document document = crawler.crawlOneProduct("0001489305");
+        Document document = crawler.crawlOneProduct("B009W02BXS", false);
         System.out.println(document);
-        ProductBundle bundle = ParseDoc("0001489305", document);
-        System.out.println(bundle.getProductActors());
-        System.out.println(bundle.getProductDetail());
-        System.out.println(bundle.getProductFormats());
+        parseAndSaveDoc("B009VMQR3W", document);
+//        System.out.println(bundle.getProductActors());
+//        System.out.println(bundle.getProductDetail());
+//        System.out.println(bundle.getProductFormats());
     }
 }
