@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Properties;
 
-public class FileProductIdsExtractor implements ProductIdsExtractor{
+public class FileProductIdsExtractor {
     public static ArrayList<String> productIds = new ArrayList<>();
 
     private static String productIdsCsvPath;
@@ -52,6 +52,10 @@ public class FileProductIdsExtractor implements ProductIdsExtractor{
 
     public int getProductIdsCount(){
         return productIds.size();
+    }
+
+    public int getIndexOfProductId(String productId){
+        return productId == null ? 0 : productIds.indexOf(productId);
     }
 
     public static void main(String[] args) {

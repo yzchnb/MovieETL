@@ -98,7 +98,11 @@ public class MovieInfoTransformer {
         return true;
     }
 
-
+    public static boolean checkValidity(Document doc){
+        Elements lisOld = doc.select("#detail-bullets > table > tbody > tr > td > div > ul > li");
+        Elements lisNew = doc.select("#a-page > div.av-page-desktop.avu-retail-page > div.avu-content.avu-section > div > div > div.DVWebNode-detail-atf-wrapper.DVWebNode > div.av-detail-section > div > div._2vWb4y.dv-dp-node-meta-info > div > div");
+        return lisOld.size() != 0 || lisNew.size() != 0;
+    }
 
     private static String[] processActors(Element element){
         Elements elements = element.children();

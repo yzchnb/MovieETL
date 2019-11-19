@@ -8,6 +8,11 @@ import org.jsoup.nodes.Document;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class MovieInfoCrawler {
 
@@ -36,7 +41,10 @@ public class MovieInfoCrawler {
             "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 Safari/537.36 TheWorld 7",
             "Mozilla/5.0 (Windows NT 6.1; W…) Gecko/20100101 Firefox/60.0"};
 
-    private final Vector<Pair<String, Integer>> proxies = new Vector<>();
+    private final Vector<Proxy> proxies = new Vector<>();
+    private final ConcurrentLinkedQueue<String> abandonedList = new ConcurrentLinkedQueue<>();
+
+    private final static ExecutorService es = Executors.newFixedThreadPool(5);
 
 //    private static long lastRefreshTime = System.currentTimeMillis();
 //
@@ -86,7 +94,7 @@ public class MovieInfoCrawler {
 //        }
 //    }
 
-    private Pair<String, Integer> getProxy() {
+    private Proxy getProxy() {
         try{
             Document doc = Jsoup.connect("http://proxy.qgvps.com:8085/allocate?Key=RN1WFQZE5QX6H9TM&Num=1&KeepAlive=5")
                     .get();
@@ -98,9 +106,9 @@ public class MovieInfoCrawler {
                 List<Map<String,Object>> list = (List<Map<String,Object>>) jsonObject.get("Data");
                 String ip = (String)list.get(0).get("IP");
                 int port = Integer.parseInt((String)list.get(0).get("port"));
-                Pair<String, Integer> proxy = new Pair<>(ip, port);
-                System.out.println("get proxy " + proxy.first + ":" + proxy.second);
-                return new Pair<>(ip, port);
+                Proxy proxy = new Proxy(ip, port);
+                System.out.println("get proxy " + proxy.ip + ":" + proxy.port);
+                return new Proxy(ip, port);
             }
             return null;
         }catch (IOException e){
@@ -109,21 +117,45 @@ public class MovieInfoCrawler {
         }
     }
 
-    private boolean abandonProxy(String ip){
-        try{
-            Document doc = Jsoup.connect("http://proxy.qgvps.com:8085/release?Key=RN1WFQZE5QX6H9TM&IP=" + ip)
-                    .get();
-            System.out.println(doc.text());
-            JSONObject jsonObject = (JSONObject) JSON.parse(doc.text());
-            Integer code = jsonObject.getInteger("Code");
-            if(code == 0){
-                return true;
+    private void abandonProxy(String ip){
+        abandonedList.offer(ip);
+        es.submit(new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    while(true){
+                        String ip = abandonedList.poll();
+                        if(ip == null){
+                            Thread.sleep(1000);
+                            continue;
+                        }
+                        while(!abandonProxy(ip)){
+                            Thread.sleep(5000);
+                        }
+                        break;
+                    }
+                }catch (InterruptedException e){
+                    e.printStackTrace();
+                }
             }
-            return false;
-        }catch (IOException e){
-            e.printStackTrace();
-            return false;
-        }
+
+            private boolean abandonProxy(String ip){
+                try{
+                    Document doc = Jsoup.connect("http://proxy.qgvps.com:8085/release?Key=RN1WFQZE5QX6H9TM&IP=" + ip)
+                            .get();
+                    System.out.println(doc.text());
+                    JSONObject jsonObject = (JSONObject) JSON.parse(doc.text());
+                    Integer code = jsonObject.getInteger("Code");
+                    if(code == 0){
+                        return true;
+                    }
+                    return false;
+                }catch (IOException e){
+                    e.printStackTrace();
+                    return false;
+                }
+            }
+        });
     }
 
     private Map<String, String> cookies = new HashMap<>();
@@ -153,26 +185,32 @@ public class MovieInfoCrawler {
                 cookies = response.cookies();
                 return response.parse();
             }catch (IOException e){
-                e.printStackTrace();
+                //e.printStackTrace();
                 return null;
             }
         }
-        Pair<String, Integer> proxy;
+        Proxy proxy;
         try{
-            synchronized (proxies){
-                if(proxies.size() == 0){
-                    Pair<String, Integer> newProxy = getProxy();
-                    while(newProxy == null){
-                        Thread.sleep(1000);
-                        System.out.println("waiting for proxies...");
-                        newProxy = getProxy();
-                    }
-                    proxies.add(getProxy());
+            if(proxies.size() < 5){
+                Proxy newProxy = getProxy();
+                while(newProxy == null){
+                    Thread.sleep(1000);
+                    System.out.println("waiting for proxies...");
+                    newProxy = getProxy();
                 }
+                synchronized (proxies){
+                    proxies.add(newProxy);
+                }
+            }
+            synchronized (proxies){
                 proxy = proxies.get(random.nextInt(proxies.size()));
             }
+            while(System.currentTimeMillis() - proxy.lastUse.get() < 5000){
+                Thread.sleep(1000);
+            }
+            proxy.lastUse.set(System.currentTimeMillis());
         }catch (InterruptedException e){
-            e.printStackTrace();
+            //e.printStackTrace();
             return null;
         }
         try{
@@ -180,26 +218,25 @@ public class MovieInfoCrawler {
                     .method(Connection.Method.GET)
                     .cookies(cookies == null ? new HashMap<String, String>() : cookies)
                     .header("user-agent", userAgents[random.nextInt(userAgents.length)])
-                    .proxy(proxy.first, proxy.second)
+                    .proxy(proxy.ip, proxy.port)
                     .execute();
 
             cookies = response.cookies();
 
-            return response.parse();
+            Document doc = response.parse();
+            if(!MovieInfoTransformer.checkValidity(doc)){
+                throw new IOException("rejected");
+            }
+            return doc;
         }catch (IOException e){
-            e.printStackTrace();
-            System.out.println("abandoning proxy ip " + proxy.first);
-            if(!abandonProxy(proxy.first)){
+            //e.printStackTrace();
+            if(proxy.decreaseAndGetRetryTime() == 0){
+                System.out.println("abandoning proxy ip " + proxy.ip);
+                abandonProxy(proxy.ip);
                 synchronized (proxies){
-                    proxies.add(proxy);
+                    proxies.remove(proxy);
                 }
             }
-//            synchronized (proxies){
-//                proxies.remove(proxy);
-//                if(proxies.size() == 0){
-//                    refreshProxies();
-//                }
-//            }
             return null;
         }
     }
@@ -215,13 +252,22 @@ public class MovieInfoCrawler {
         System.out.println(doc);
     }
 
-    static class Pair<L, R>{
-        L first;
-        R second;
+    static class Proxy {
+        String ip;
+        int port;
+        AtomicInteger retryTime = new AtomicInteger(3);
+        AtomicLong lastUse = new AtomicLong(System.currentTimeMillis());
+        Proxy(String ip, int port) {
+            this.ip = ip;
+            this.port = port;
+        }
 
-        Pair(L first, R second) {
-            this.first = first;
-            this.second = second;
+        public int getRetryTime() {
+            return retryTime.get();
+        }
+
+        public int decreaseAndGetRetryTime() {
+            return this.retryTime.decrementAndGet();
         }
     }
 

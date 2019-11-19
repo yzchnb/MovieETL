@@ -4,8 +4,10 @@ import Entities.ProductBundle;
 import org.jsoup.nodes.Document;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
@@ -47,13 +49,20 @@ public class Main {
         doCrawlAndSave();
     }
 
-    static void doCrawlAndSave() {
+    private static void doCrawlAndSave() {
         File htmlsDir = new File(baseDir + "/htmls");
-        int startIndex = htmlsDir.listFiles().length;
-        ProductIdsExtractor productIdsExtractor = new FileProductIdsExtractor();
+        long lastModified = Long.MIN_VALUE;
+        String lastProductId = null;
+        for (File file : htmlsDir.listFiles()) {
+            if(file.lastModified() > lastModified){
+                lastModified = file.lastModified();
+                lastProductId = file.getName().split("\\.")[0];
+            }
+        }
+        FileProductIdsExtractor productIdsExtractor = new FileProductIdsExtractor();
+        int startIndex = productIdsExtractor.getIndexOfProductId(lastProductId);
 
         MovieInfoCrawler crawler = new MovieInfoCrawler();
-
         ExecutorService executorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
         for(int currIndex = startIndex; currIndex < productIdsExtractor.getProductIdsCount(); currIndex++){
             executorService.submit(new StreamProcessRunner(crawler, productIdsExtractor.getProductId(currIndex), currIndex , retryTime));
@@ -93,7 +102,7 @@ public class Main {
             System.out.println("log file not found");
         }
         System.out.println(sdf.format(date));
-        ProductIdsExtractor productIdsExtractor = new FileProductIdsExtractor();
+        FileProductIdsExtractor productIdsExtractor = new FileProductIdsExtractor();
 
         int productIdsCount = productIdsExtractor.getProductIdsCount();
         int loopTime = productIdsCount / BATCH_SIZE + 1;
@@ -173,7 +182,7 @@ public class Main {
         private boolean crawlersOverFlag = false;
         private int batchIndex;
         private int batchSize = BATCH_SIZE;
-        private ProductIdsExtractor productIdsExtractor = new FileProductIdsExtractor();
+        private FileProductIdsExtractor productIdsExtractor = new FileProductIdsExtractor();
         BatchProcessThread(int batchIndex){
             this.batchIndex = batchIndex;
         }
