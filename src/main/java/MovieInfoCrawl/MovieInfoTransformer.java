@@ -134,9 +134,13 @@ public class MovieInfoTransformer {
 
     public static void main(String[] args) {
         MovieInfoCrawler crawler = new MovieInfoCrawler();
-        Document document = crawler.crawlOneProduct("B009W02BXS", false);
-        System.out.println(document);
-        parseAndSaveDoc("B009VMQR3W", document);
+        try{
+            Document document = crawler.crawlOneProduct("B009W02BXS", false);
+            System.out.println(document);
+            parseAndSaveDoc("B009VMQR3W", document);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 //        System.out.println(bundle.getProductActors());
 //        System.out.println(bundle.getProductDetail());
 //        System.out.println(bundle.getProductFormats());

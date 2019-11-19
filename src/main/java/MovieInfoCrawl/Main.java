@@ -18,18 +18,12 @@ public class Main {
 
     private static String baseDir;
     private static Integer retryTime;
-    private static BufferedWriter failedProductIdsCsvFileWriter;
     static {
         try{
             Properties props = new Properties();
             props.load(Main.class.getClassLoader().getResourceAsStream("baseDir.properties"));
             baseDir = props.getProperty("baseDir");
             retryTime = Integer.parseInt(props.getProperty("retryTime"));
-            File failedProductIdsCsvFile = new File(props.getProperty("failedProductIdsCsv"));
-            if(!failedProductIdsCsvFile.exists()){
-                failedProductIdsCsvFile.createNewFile();
-            }
-            failedProductIdsCsvFileWriter = new BufferedWriter(new FileWriter(failedProductIdsCsvFile));
         }catch (IOException e){
             e.printStackTrace();
         }
@@ -43,28 +37,18 @@ public class Main {
 
     private final static int START_BATCH_INDEX = 0;
 
-    private final static int THREAD_POOL_SIZE = 10;
+    private final static int THREAD_POOL_SIZE = 50;
 
     public static void main(String[] args) {
         doCrawlAndSave();
     }
 
     private static void doCrawlAndSave() {
-        File htmlsDir = new File(baseDir + "/htmls");
-        long lastModified = Long.MIN_VALUE;
-        String lastProductId = null;
-        for (File file : htmlsDir.listFiles()) {
-            if(file.lastModified() > lastModified){
-                lastModified = file.lastModified();
-                lastProductId = file.getName().split("\\.")[0];
-            }
-        }
         FileProductIdsExtractor productIdsExtractor = new FileProductIdsExtractor();
-        int startIndex = productIdsExtractor.getIndexOfProductId(lastProductId);
 
         MovieInfoCrawler crawler = new MovieInfoCrawler();
         ExecutorService executorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
-        for(int currIndex = startIndex; currIndex < productIdsExtractor.getProductIdsCount(); currIndex++){
+        for(int currIndex = 0; currIndex < productIdsExtractor.getProductIdsCount(); currIndex++){
             executorService.submit(new StreamProcessRunner(crawler, productIdsExtractor.getProductId(currIndex), currIndex , retryTime));
         }
         executorService.shutdown();
@@ -145,32 +129,31 @@ public class Main {
                 Document doc;
                 boolean success = false;
                 while(retryTime > 0){
-                    doc = crawler.crawlOneProduct(productId);
-                    if(doc == null){
-                        System.out.println("Crawler" + Thread.currentThread().getId() + " crawling " + productId + " failed... cause: cannot access  retryTime left:" + retryTime);
-                        //retry
-                        retryTime--;
-                        Thread.sleep(5000);
-                        continue;
+                    try{
+                        doc = crawler.crawlOneProduct(productId);
+                        success = MovieInfoTransformer.parseAndSaveDoc(productId, doc);
+                    }catch (Exception e){
+                        if(e instanceof IOException){
+                            System.out.println("Crawler" + Thread.currentThread().getId() + " crawling " + productId + " failed... cause: cannot access  retryTime left:" + retryTime);
+                            //retry
+                            retryTime--;
+                            Thread.sleep(5000);
+                            continue;
+                        }else{
+                            System.out.println("Crawler" + Thread.currentThread().getId() + " crawling " + productId + " failed... cause: rejected retryTime left:" + retryTime);
+                            retryTime--;
+                            Thread.sleep(5000);
+                            continue;
+                        }
                     }
-                    success = MovieInfoTransformer.parseAndSaveDoc(productId, doc);
-                    if(!success){
-                        System.out.println("Crawler" + Thread.currentThread().getId() + " crawling " + productId + " failed... cause: rejected retryTime left:" + retryTime);
-                        retryTime--;
-                        Thread.sleep(5000);
-                        continue;
-                    }
-                    break;
                 }
                 if(!success){
                     System.out.println("Crawler" + Thread.currentThread().getId() + " crawling " + productId + " failed");
-                    //TODO 写入文件，记录失败
-                    failedProductIdsCsvFileWriter.write(productId + "\n");
                     return;
                 }
                 System.out.println("Crawler" + Thread.currentThread().getId() + " got product " + productId);
 
-            }catch (InterruptedException | IOException e) {
+            }catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }

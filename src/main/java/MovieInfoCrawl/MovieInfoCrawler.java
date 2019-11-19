@@ -2,19 +2,18 @@ package MovieInfoCrawl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import org.eclipse.jetty.util.ConcurrentHashSet;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class MovieInfoCrawler {
+    private ProxyExtractor proxyExtractor = new ProxyExtractor();
 
 //    private final static WebClient client = new WebClient();
 //
@@ -41,12 +40,13 @@ public class MovieInfoCrawler {
             "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 Safari/537.36 TheWorld 7",
             "Mozilla/5.0 (Windows NT 6.1; W…) Gecko/20100101 Firefox/60.0"};
 
-    private final Vector<Proxy> proxies = new Vector<>();
-    private final ConcurrentLinkedQueue<String> abandonedList = new ConcurrentLinkedQueue<>();
+    //private final Vector<Proxy> proxies = new Vector<>();
+    //private final ConcurrentHashSet<Proxy> proxies = new ConcurrentHashSet<>();
+    //private final ConcurrentLinkedQueue<String> abandonedList = new ConcurrentLinkedQueue<>();
 
-    private final static ExecutorService es = Executors.newFixedThreadPool(5);
+    //private final static ExecutorService es = Executors.newFixedThreadPool(5);
 
-//    private static long lastRefreshTime = System.currentTimeMillis();
+    private static long lastRefreshTime = System.currentTimeMillis();
 //
 //    private boolean refreshingProxies = false;
 
@@ -94,75 +94,42 @@ public class MovieInfoCrawler {
 //        }
 //    }
 
-    private Proxy getProxy() {
-        try{
-            Document doc = Jsoup.connect("http://proxy.qgvps.com:8085/allocate?Key=RN1WFQZE5QX6H9TM&Num=1&KeepAlive=5")
-                    .get();
-            //System.out.println(doc.text());
-            JSONObject jsonObject = (JSONObject) JSON.parse(doc.text());
-            Integer code = jsonObject.getInteger("Code");
-            if(code == 0){
-                System.out.println("get proxy");
-                List<Map<String,Object>> list = (List<Map<String,Object>>) jsonObject.get("Data");
-                String ip = (String)list.get(0).get("IP");
-                int port = Integer.parseInt((String)list.get(0).get("port"));
-                Proxy proxy = new Proxy(ip, port);
-                System.out.println("get proxy " + proxy.ip + ":" + proxy.port);
-                return new Proxy(ip, port);
-            }
-            return null;
-        }catch (IOException e){
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    private void abandonProxy(String ip){
-        abandonedList.offer(ip);
-        es.submit(new Runnable() {
-            @Override
-            public void run() {
-                try{
-                    while(true){
-                        String ip = abandonedList.poll();
-                        if(ip == null){
-                            Thread.sleep(1000);
-                            continue;
-                        }
-                        while(!abandonProxy(ip)){
-                            Thread.sleep(5000);
-                        }
-                        break;
-                    }
-                }catch (InterruptedException e){
-                    e.printStackTrace();
-                }
-            }
-
-            private boolean abandonProxy(String ip){
-                try{
-                    Document doc = Jsoup.connect("http://proxy.qgvps.com:8085/release?Key=RN1WFQZE5QX6H9TM&IP=" + ip)
-                            .get();
-                    System.out.println(doc.text());
-                    JSONObject jsonObject = (JSONObject) JSON.parse(doc.text());
-                    Integer code = jsonObject.getInteger("Code");
-                    if(code == 0){
-                        return true;
-                    }
-                    return false;
-                }catch (IOException e){
-                    e.printStackTrace();
-                    return false;
-                }
-            }
-        });
-    }
+//    private void addProxies() {
+//        synchronized (proxies){
+//            try{
+//                while(System.currentTimeMillis() - lastRefreshTime < 15 * 1000){
+//                    Thread.sleep(1000);
+//                    System.out.println("waiting for time gap passed...");
+//                }
+//                String url = "http://piping.mogumiao.com/proxy/api/get_ip_bs?appKey=cc6037b2f7204ec396dcfb6ca0a694fc&count=5&expiryDate=0&format=1&newLine=2";
+//                Document doc = Jsoup.connect(url)
+//                        .get();
+//                //System.out.println(doc.text());
+//                JSONObject jsonObject = (JSONObject) JSON.parse(doc.text());
+//                Integer code = jsonObject.getInteger("code");
+//                if(code == 0){
+//                    List<Map<String,Object>> list = (List<Map<String,Object>>) jsonObject.get("msg");
+//                    for (Map<String, Object> map : list) {
+//                        String ip = (String)map.get("ip");
+//                        int port = Integer.parseInt((String)map.get("port"));
+//                        Proxy proxy = new Proxy(ip, port);
+//                        System.out.println("get proxy " + proxy.ip + ":" + proxy.port);
+//                        proxies.add(proxy);
+//                    }
+//                }else{
+//                    addProxies();
+//                }
+//            }catch (IOException | InterruptedException e){
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 
     private Map<String, String> cookies = new HashMap<>();
 
     private Random random = new Random();
 
-    public Document crawlOneProduct(String productId, boolean useProxy){
+    public Document crawlOneProduct(String productId, boolean useProxy) throws Exception{
 
           String baseUrl = "https://www.amazon.com/gp/product/";
 //        HtmlPage page;
@@ -189,30 +156,31 @@ public class MovieInfoCrawler {
                 return null;
             }
         }
-        Proxy proxy;
-        try{
-            if(proxies.size() < 5){
-                Proxy newProxy = getProxy();
-                while(newProxy == null){
-                    Thread.sleep(1000);
-                    System.out.println("waiting for proxies...");
-                    newProxy = getProxy();
-                }
-                synchronized (proxies){
-                    proxies.add(newProxy);
-                }
-            }
-            synchronized (proxies){
-                proxy = proxies.get(random.nextInt(proxies.size()));
-            }
-            while(System.currentTimeMillis() - proxy.lastUse.get() < 5000){
-                Thread.sleep(1000);
-            }
-            proxy.lastUse.set(System.currentTimeMillis());
-        }catch (InterruptedException e){
-            //e.printStackTrace();
-            return null;
-        }
+        Proxy proxy = proxyExtractor.getProxy();
+//        try{
+//            while(proxy == null){
+//                synchronized (proxies){
+//                    if(proxies.size() < 5){
+//                        addProxies();
+//                    }
+//                    Iterator<Proxy> proxyIter = proxies.iterator();
+//                    int randomIndex = random.nextInt(proxies.size());
+//                    for (int i = 0; i < randomIndex; i++) {
+//                        proxy = proxyIter.next();
+//                    }
+//                }
+//                if(proxy == null){
+//                    continue;
+//                }
+//                while(System.currentTimeMillis() - proxy.lastUse.get() < 5000){
+//                    Thread.sleep(1000);
+//                }
+//                proxy.lastUse.set(System.currentTimeMillis());
+//            }
+//        }catch (InterruptedException e){
+//            //e.printStackTrace();
+//            return null;
+//        }
         try{
             Connection.Response response = Jsoup.connect(baseUrl + productId).timeout(30000)
                     .method(Connection.Method.GET)
@@ -225,50 +193,31 @@ public class MovieInfoCrawler {
 
             Document doc = response.parse();
             if(!MovieInfoTransformer.checkValidity(doc)){
-                throw new IOException("rejected");
+                throw new Exception("rejected");
             }
             return doc;
-        }catch (IOException e){
+        }catch (Exception e){
             //e.printStackTrace();
-            if(proxy.decreaseAndGetRetryTime() == 0){
-                System.out.println("abandoning proxy ip " + proxy.ip);
-                abandonProxy(proxy.ip);
-                synchronized (proxies){
-                    proxies.remove(proxy);
-                }
-            }
-            return null;
+            System.out.println("fail proxy ip " + proxy.ip);
+            proxyExtractor.failProxy(proxy);
+            throw e;
         }
     }
 
-    public Document crawlOneProduct(String productId){
+    public Document crawlOneProduct(String productId) throws Exception{
         return crawlOneProduct(productId, true);
     }
 
 
     public static void main(String[] args) {
         MovieInfoCrawler crawler = new MovieInfoCrawler();
-        Document doc = crawler.crawlOneProduct("0001489305");
-        System.out.println(doc);
-    }
-
-    static class Proxy {
-        String ip;
-        int port;
-        AtomicInteger retryTime = new AtomicInteger(3);
-        AtomicLong lastUse = new AtomicLong(System.currentTimeMillis());
-        Proxy(String ip, int port) {
-            this.ip = ip;
-            this.port = port;
-        }
-
-        public int getRetryTime() {
-            return retryTime.get();
-        }
-
-        public int decreaseAndGetRetryTime() {
-            return this.retryTime.decrementAndGet();
+        try{
+            Document doc = crawler.crawlOneProduct("0001489305");
+            System.out.println(doc);
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
+
 
 }

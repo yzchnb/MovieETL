@@ -2,34 +2,44 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b9c9251a-f919-44c0-8d4a-a093cf89dd81" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/MovieInfoCrawl/Proxy.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/MovieInfoCrawl/ProxyExtractor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/MovieInfoCrawl/DBProductIdsExtractor.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/MovieInfoCrawl/FileProductIdsExtractor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/MovieInfoCrawl/FileProductIdsExtractor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/MovieInfoCrawl/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/MovieInfoCrawl/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/MovieInfoCrawl/MovieInfoCrawler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/MovieInfoCrawl/MovieInfoCrawler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/MovieInfoCrawl/MovieInfoTransformer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/MovieInfoCrawl/MovieInfoTransformer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/MovieInfoCrawl/ProductIdsExtractor.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/baseDir.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/baseDir.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ETL/Extractor.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ETL/Extractor.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ETL/Loader.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ETL/Loader.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ETL/Transfomer.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ETL/Transfomer.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/Entities/Product.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Entities/Product.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/Entities/ProductActor.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Entities/ProductActor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/Entities/ProductBundle.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Entities/ProductBundle.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/Entities/ProductDetail.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Entities/ProductDetail.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/Entities/ProductFormat.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Entities/ProductFormat.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/Entities/Review.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Entities/Review.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/Entities/User.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Entities/User.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/LoadTask.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/LoadTask.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/META-INF/MovieETL.kotlin_module" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/META-INF/MovieETL.kotlin_module" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Main.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/MovieInfoCrawl/DBProductIdsExtractor.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/MovieInfoCrawl/FileProductIdsExtractor.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/MovieInfoCrawl/FileProductIdsExtractor.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/MovieInfoCrawl/Main$BatchProcessThread$CrawlerRunner.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/MovieInfoCrawl/Main$BatchProcessThread$CrawlerRunner.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/MovieInfoCrawl/Main$BatchProcessThread$LoaderRunner.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/MovieInfoCrawl/Main$BatchProcessThread$LoaderRunner.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/MovieInfoCrawl/Main$BatchProcessThread.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/MovieInfoCrawl/Main$BatchProcessThread.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/MovieInfoCrawl/Main$StreamProcessRunner.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/MovieInfoCrawl/Main$StreamProcessRunner.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/MovieInfoCrawl/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/MovieInfoCrawl/Main.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/MovieInfoCrawl/MovieInfoCrawler$Pair.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/MovieInfoCrawl/MovieInfoCrawler$Proxy.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/MovieInfoCrawl/MovieInfoCrawler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/MovieInfoCrawl/MovieInfoCrawler.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/MovieInfoCrawl/MovieInfoLoader.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/MovieInfoCrawl/MovieInfoLoader.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/MovieInfoCrawl/MovieInfoTransformer.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/MovieInfoCrawl/MovieInfoTransformer.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/MovieInfoCrawl/ProductIdsExtractor.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/TableInitializer.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/TableInitializer.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/Utils/C3P0Mysql.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Utils/C3P0Mysql.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/baseDir.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/baseDir.properties" afterDir="false" />
     </list>
+    <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,16 +63,168 @@
   <component name="DefaultGradleProjectSettings">
     <option name="isMigrated" value="true" />
   </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/MovieInfoCrawl/MovieInfoCrawler.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-21">
+              <caret line="161" column="23" selection-start-line="161" selection-start-column="18" selection-end-line="161" selection-end-column="23" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/MovieInfoCrawl/ProxyExtractor.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="143">
+              <caret line="39" column="40" selection-start-line="39" selection-start-column="40" selection-end-line="39" selection-end-column="40" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/MovieInfoCrawl/Proxy.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="255">
+              <caret line="19" column="15" selection-start-line="19" selection-start-column="15" selection-end-line="19" selection-end-column="15" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#495#496#0" expanded="true" />
+                <element signature="e#550#551#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/pom.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="130">
+              <caret line="33" column="42" selection-start-line="33" selection-start-column="42" selection-end-line="33" selection-end-column="42" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/MovieInfoCrawl/MovieInfoTransformer.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="960">
+              <caret line="139" column="52" selection-start-line="139" selection-start-column="52" selection-end-line="139" selection-end-column="52" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/resources/baseDir.properties">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="30">
+              <caret line="2" column="12" selection-start-line="2" selection-start-column="12" selection-end-line="2" selection-end-column="12" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/MovieInfoCrawl/Main.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="257">
+              <caret line="39" column="51" lean-forward="true" selection-start-line="39" selection-start-column="51" selection-end-line="39" selection-end-column="51" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#1587#1588#0" expanded="true" />
+                <element signature="e#1619#1620#0" expanded="true" />
+                <element signature="class#BatchProcessThread#0;class#Main#0" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/MovieInfoCrawl/FileProductIdsExtractor.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="317">
+              <caret line="49" selection-start-line="49" selection-end-line="49" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#1537#1538#0" expanded="true" />
+                <element signature="e#1581#1582#0" expanded="true" />
+                <element signature="e#1619#1620#0" expanded="true" />
+                <element signature="e#1659#1660#0" expanded="true" />
+                <element signature="e#1714#1715#0" expanded="true" />
+                <element signature="e#1790#1791#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/Utils/C3P0Mysql.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="330">
+              <caret line="24" selection-start-line="24" selection-end-line="24" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/MovieInfoCrawl/MovieInfoLoader.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="195">
+              <caret line="13" column="13" selection-start-line="13" selection-start-column="13" selection-end-line="13" selection-end-column="13" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="Interface" />
+        <option value="Class" />
       </list>
     </option>
   </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>refreshProxies</find>
+      <find>cannot</find>
+      <find>cannot access</find>
+      <find>synch</find>
+      <find>got</find>
+    </findStrings>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/src/main/java/MovieInfoCrawl/MovieInfoTransformer.java" />
+        <option value="$PROJECT_DIR$/src/main/java/MovieInfoCrawl/FileProductIdsExtractor.java" />
+        <option value="$PROJECT_DIR$/src/main/java/MovieInfoCrawl/Proxy.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/baseDir.properties" />
+        <option value="$PROJECT_DIR$/src/main/java/MovieInfoCrawl/MovieInfoCrawler.java" />
+        <option value="$PROJECT_DIR$/src/main/java/MovieInfoCrawl/ProxyExtractor.java" />
+        <option value="$PROJECT_DIR$/src/main/java/MovieInfoCrawl/Main.java" />
+      </list>
+    </option>
   </component>
   <component name="MacroExpansionManager">
     <option name="directoryName" value="JDnAiExu" />
@@ -83,16 +245,74 @@
   </component>
   <component name="ProjectId" id="1Tn9cHmTXSbO0HDnasuorOAALA0" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="PackagesPane" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="MovieETL" type="b2602c69:ProjectViewProjectNode" />
+              <item name="MovieETL" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="MovieETL" type="b2602c69:ProjectViewProjectNode" />
+              <item name="MovieETL" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="MovieETL" type="b2602c69:ProjectViewProjectNode" />
+              <item name="MovieETL" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="MovieETL" type="b2602c69:ProjectViewProjectNode" />
+              <item name="MovieETL" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="MovieETL" type="b2602c69:ProjectViewProjectNode" />
+              <item name="MovieETL" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="MovieInfoCrawl" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="MovieETL" type="b2602c69:ProjectViewProjectNode" />
+              <item name="MovieETL" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="resources" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="MovieETL" type="b2602c69:ProjectViewProjectNode" />
+              <item name="MovieETL" type="462c0819:PsiDirectoryNode" />
+              <item name="target" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="Scope" />
+    </panes>
+  </component>
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
-    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.2375" />
     <property name="project.structure.side.proportion" value="0.6453265" />
-    <property name="settings.editor.selected.configurable" value="MavenSettings" />
+    <property name="settings.editor.selected.configurable" value="reference.projectsettings.compiler.javacompiler" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -215,6 +435,46 @@
     </task>
     <servers />
   </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="8737000" />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="48" y="23" width="1392" height="877" extended-state="6" />
+    <layout>
+      <window_info id="Image Layers" order="0" />
+      <window_info id="Capture Tool" order="1" />
+      <window_info id="UI Designer" order="2" />
+      <window_info id="Favorites" order="3" side_tool="true" />
+      <window_info id="Designer" order="4" />
+      <window_info content_ui="combo" id="Project" order="5" visible="true" weight="0.32074073" />
+      <window_info id="Structure" order="6" side_tool="true" weight="0.25" />
+      <window_info anchor="bottom" id="Docker" order="0" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Event Log" order="1" sideWeight="0.50036955" side_tool="true" weight="0.3299363" />
+      <window_info anchor="bottom" id="Database Changes" order="2" />
+      <window_info anchor="bottom" id="Messages" order="3" sideWeight="0.49963045" weight="0.32738853" />
+      <window_info anchor="bottom" id="Version Control" order="4" />
+      <window_info anchor="bottom" id="Terminal" order="5" weight="0.3299363" />
+      <window_info anchor="bottom" id="Message" order="6" />
+      <window_info anchor="bottom" id="Find" order="7" />
+      <window_info active="true" anchor="bottom" id="Run" order="8" sideWeight="0.49963045" visible="true" weight="0.555414" />
+      <window_info anchor="bottom" id="Debug" order="9" weight="0.32611465" />
+      <window_info anchor="bottom" id="Cvs" order="10" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="11" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="12" />
+      <window_info anchor="bottom" id="Java Enterprise" order="13" />
+      <window_info anchor="right" id="Palette" order="0" />
+      <window_info anchor="right" id="Capture Analysis" order="1" />
+      <window_info anchor="right" id="Database" order="2" />
+      <window_info anchor="right" id="Palette&#9;" order="3" />
+      <window_info anchor="right" id="Theme Preview" order="4" />
+      <window_info anchor="right" id="Coverage" order="5" side_tool="true" weight="0.32963786" />
+      <window_info anchor="right" id="Maven" order="6" weight="0.32963786" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="7" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="8" weight="0.24981523" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="9" weight="0.25" />
+      <window_info anchor="right" id="Cargo" order="10" />
+    </layout>
+  </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
@@ -223,7 +483,28 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="RECENTLY_FILTERED_USER_GROUPS">
+                <collection />
+              </option>
+              <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+                <collection />
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="Branch">
+          <value>
+            <list />
+          </value>
+        </entry>
+        <entry key="User">
+          <value>
+            <list />
           </value>
         </entry>
       </map>
@@ -235,37 +516,44 @@
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/MovieInfoCrawl/MovieInfoLoader.java</url>
           <line>124</line>
+          <properties />
           <option name="timeStamp" value="15" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/MovieInfoCrawl/MovieInfoCrawler.java</url>
-          <line>147</line>
-          <option name="timeStamp" value="19" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/MovieInfoCrawl/MovieInfoTransformer.java</url>
           <line>132</line>
+          <properties />
           <option name="timeStamp" value="21" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/MovieInfoCrawl/Main.java</url>
-          <line>178</line>
+          <line>161</line>
+          <properties />
           <option name="timeStamp" value="22" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/MovieInfoCrawl/Main.java</url>
-          <line>81</line>
+          <line>65</line>
+          <properties />
           <option name="timeStamp" value="23" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/MovieInfoCrawl/MovieInfoCrawler.java</url>
-          <line>204</line>
-          <option name="timeStamp" value="24" />
+          <url>file://$PROJECT_DIR$/src/main/java/MovieInfoCrawl/FileProductIdsExtractor.java</url>
+          <line>41</line>
+          <properties />
+          <option name="timeStamp" value="29" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/MovieInfoCrawl/Main.java</url>
-          <line>61</line>
-          <option name="timeStamp" value="26" />
+          <url>file://$PROJECT_DIR$/src/main/java/MovieInfoCrawl/FileProductIdsExtractor.java</url>
+          <line>49</line>
+          <properties />
+          <option name="timeStamp" value="30" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/MovieInfoCrawl/ProxyExtractor.java</url>
+          <line>16</line>
+          <properties />
+          <option name="timeStamp" value="31" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -274,7 +562,6 @@
         <watch expression="object" language="JAVA" />
         <watch expression="bundleBuffer" language="JAVA" />
         <watch expression="document.select(&quot;#a-page &gt; div.av-page-desktop.avu-retail-page &gt; div.avu-content.avu-section &gt; div &gt; div &gt; div.DVWebNode-detail-atf-wrapper.DVWebNode &gt; div.av-detail-section &gt; div &gt; div._2vWb4y.dv-dp-node-meta-info &gt; div &gt; div&quot;)" language="JAVA" />
-        <watch expression="productIdsExtractor.getProductIdsCount()" language="JAVA" />
       </configuration>
     </watches-manager>
   </component>
@@ -284,6 +571,103 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/MovieETL$Main.ic" NAME="Main Coverage Results" MODIFIED="1569329225474" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/src/main/java/MovieInfoCrawl/MovieInfoLoader.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="13" column="13" selection-start-line="13" selection-start-column="13" selection-end-line="13" selection-end-column="13" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="130">
+          <caret line="33" column="42" selection-start-line="33" selection-start-column="42" selection-end-line="33" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/MovieInfoCrawl/FileProductIdsExtractor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="317">
+          <caret line="49" selection-start-line="49" selection-end-line="49" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1537#1538#0" expanded="true" />
+            <element signature="e#1581#1582#0" expanded="true" />
+            <element signature="e#1619#1620#0" expanded="true" />
+            <element signature="e#1659#1660#0" expanded="true" />
+            <element signature="e#1714#1715#0" expanded="true" />
+            <element signature="e#1790#1791#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/baseDir.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="12" selection-start-line="2" selection-start-column="12" selection-end-line="2" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/MovieInfoCrawl/MovieInfoTransformer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="960">
+          <caret line="139" column="52" selection-start-line="139" selection-start-column="52" selection-end-line="139" selection-end-column="52" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/MovieInfoCrawl/MovieInfoCrawler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-21">
+          <caret line="161" column="23" selection-start-line="161" selection-start-column="18" selection-end-line="161" selection-end-column="23" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/MovieInfoCrawl/ProxyExtractor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="143">
+          <caret line="39" column="40" selection-start-line="39" selection-start-column="40" selection-end-line="39" selection-end-column="40" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/MovieInfoCrawl/Proxy.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="19" column="15" selection-start-line="19" selection-start-column="15" selection-end-line="19" selection-end-column="15" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#495#496#0" expanded="true" />
+            <element signature="e#550#551#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/MovieInfoCrawl/Main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="257">
+          <caret line="39" column="51" lean-forward="true" selection-start-line="39" selection-start-column="51" selection-end-line="39" selection-end-column="51" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1587#1588#0" expanded="true" />
+            <element signature="e#1619#1620#0" expanded="true" />
+            <element signature="class#BatchProcessThread#0;class#Main#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
   </component>
   <component name="masterDetails">
     <states>

@@ -5,17 +5,20 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Properties;
 
 public class FileProductIdsExtractor {
     public static ArrayList<String> productIds = new ArrayList<>();
 
     private static String productIdsCsvPath;
+    private static String baseDir;
     static {
         try{
             Properties props = new Properties();
             props.load(Main.class.getClassLoader().getResourceAsStream("baseDir.properties"));
             productIdsCsvPath = props.getProperty("productIdsCsv");
+            baseDir = props.getProperty("baseDir");
         }catch (IOException e){
             e.printStackTrace();
         }
@@ -36,6 +39,16 @@ public class FileProductIdsExtractor {
                 }
                 productIds.add(productId);
             }
+            File htmls = new File(baseDir + "/htmls");
+            if(!htmls.exists()){
+                htmls.mkdir();
+            }
+            HashSet<String> alreadyGeneratedSet = new HashSet<>();
+            for (String s : htmls.list()) {
+                alreadyGeneratedSet.add(s.split("\\.")[0]);
+            }
+            productIds.removeAll(alreadyGeneratedSet);
+
         }catch (Exception e){
             e.printStackTrace();
         }
